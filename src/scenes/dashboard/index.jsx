@@ -1,5 +1,4 @@
 import { Box, Button, IconButton, Typography, useTheme, Modal, TextField } from "@mui/material";
-import { tokens,  } from "../../theme";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
@@ -10,7 +9,6 @@ import TrafficIcon from "@mui/icons-material/Traffic";
 import LineChart from "../../components/LineChart";
 import GeographyChart from "../../components/GeographyChart";
 import StatBox from "../../components/StatBox";
-import ProgressCircle from "../../components/ProgressCircle";
 import { ResizableBox } from "react-resizable";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
@@ -270,7 +268,6 @@ const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
                 boxShadow="0px 4px 10px rgba(0, 0, 0, 0.2)"
                 position="relative"
               >
-                {/* Close Button */}
                 <IconButton
                   onClick={cancelEdit}
                   sx={{
@@ -284,12 +281,11 @@ const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
                   <CloseIcon />
                 </IconButton>
     
-                {/* TextField for editing content */}
                 <TextField
                   label="Edit Content"
                   multiline
                   rows={4}
-                  value={newContent} // Ensure it's a string
+                  value={newContent} 
                   onChange={(e) => {
                     console.log('TextField onChange:', e.target.value); 
                     setNewContent(e.target.value); 
