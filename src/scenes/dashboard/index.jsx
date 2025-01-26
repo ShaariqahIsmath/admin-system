@@ -223,8 +223,8 @@ const Dashboard = () => {
     const newWidget = {
       id: Date.now() + 1,
       size: { width: 300, height: 200 },
-      contentType: "Text", // Change to 'Text' or another type when adding content
-      contentProps: { title: "New Widget Content" }, // Set initial content for the widget
+      contentType: "Text", 
+      contentProps: { title: "New Widget Content" }, 
     };
     setWidgets((prevWidgets) => [...prevWidgets, newWidget]);
   };
