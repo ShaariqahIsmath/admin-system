@@ -280,7 +280,7 @@ export const mockTransactions = [
     cost: "133.45",
   },
   {
-    txId: "01e4dsa",
+    txId: "01e4dfo",
     user: "aberdohnny",
     date: "2021-09-01",
     cost: "43.95",
@@ -298,7 +298,7 @@ export const mockTransactions = [
     cost: "13.55",
   },
   {
-    txId: "01e4dsa",
+    txId: "01e4sdra",
     user: "aberdohnny",
     date: "2021-09-01",
     cost: "43.95",
@@ -310,7 +310,7 @@ export const mockTransactions = [
     cost: "24.20",
   },
   {
-    txId: "0315dsaa",
+    txId: "0315dsax",
     user: "jackdower",
     date: "2022-04-01",
     cost: "133.45",

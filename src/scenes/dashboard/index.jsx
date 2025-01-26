@@ -23,6 +23,8 @@ import { ResizableBox } from "react-resizable";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import "react-resizable/css/styles.css";
+import { mockTransactions } from "../../data/mockData";
+import { tokens } from "../../theme";
 
 // Draggable Box Component
 const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
@@ -116,6 +118,10 @@ const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
 
 // Main Dashboard Component
 const Dashboard = () => {
+  const dashboardTheme = useTheme();
+
+  const colors = tokens(dashboardTheme.palette.mode);
+
   // Loading widgets from localStorage or initializing with default values
   const [widgets, setWidgets] = useState(() => {
     const savedWidgets = localStorage.getItem("widgets");
@@ -171,6 +177,14 @@ const Dashboard = () => {
           },
           {
             id: 4,
+            size: { width: 450, height: 500 },
+            contentType: "Transactions",
+            contentProps: {
+              title: "Recent Transactions",
+            },
+          },
+          {
+            id: 5,
             size: { width: 600, height: 300 },
             contentType: "LineChart",
             contentProps: {
@@ -179,7 +193,7 @@ const Dashboard = () => {
             },
           },
           {
-            id: 5,
+            id: 6,
             size: { width: 600, height: 300 },
             contentType: "GeographyChart",
             contentProps: {
@@ -196,7 +210,6 @@ const Dashboard = () => {
     localStorage.setItem("widgets", JSON.stringify(widgets));
   }, [widgets]);
 
-  const theme = useTheme();
   const [editingWidget, setEditingWidget] = useState(null); // State to track the widget being edited
   const [modalOpen, setModalOpen] = useState(false); // Modal visibility state
 
@@ -258,6 +271,19 @@ const Dashboard = () => {
     setModalOpen(false); // Close modal
   };
 
+  // State for checked rows
+  const [checkedRows, setCheckedRows] = React.useState([]);
+
+  // Toggle checkbox and manage strikethrough effect
+  const handleCheckboxChange = (txId) => {
+    setCheckedRows(
+      (prev) =>
+        prev.includes(txId)
+          ? prev.filter((id) => id !== txId) // Remove the txId from the array
+          : [...prev, txId] // Add the txId to the array
+    );
+  };
+
   // Render content dynamically based on contentType
   const renderContent = (widget) => {
     if (widget.contentType === "Placeholder") {
@@ -270,9 +296,9 @@ const Dashboard = () => {
           justifyContent="center"
           sx={{
             backgroundColor:
-              theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
+              dashboardTheme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
             border: `2px dashed ${
-              theme.palette.mode === "dark" ? "#ccc" : "#555"
+              dashboardTheme.palette.mode === "dark" ? "#ccc" : "#555"
             }`,
             borderRadius: "8px",
           }}
@@ -280,7 +306,7 @@ const Dashboard = () => {
           <Typography
             variant="h5"
             fontWeight="600"
-            color={theme.palette.mode === "dark" ? "white" : "black"}
+            color={dashboardTheme.palette.mode === "dark" ? "white" : "black"}
           >
             {widget.contentProps.title || "Add content here"}
           </Typography>
@@ -297,9 +323,9 @@ const Dashboard = () => {
           justifyContent="center"
           sx={{
             backgroundColor:
-              theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
+              dashboardTheme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
             border: `2px dashed ${
-              theme.palette.mode === "dark" ? "#ccc" : "#555"
+              dashboardTheme.palette.mode === "dark" ? "#ccc" : "#555"
             }`,
             borderRadius: "8px",
           }}
@@ -307,7 +333,7 @@ const Dashboard = () => {
           <Typography
             variant="h5"
             fontWeight="600"
-            color={theme.palette.mode === "dark" ? "white" : "black"}
+            color={dashboardTheme.palette.mode === "dark" ? "white" : "black"}
           >
             {widget.contentProps.title || "Add content here"}
           </Typography>
@@ -355,6 +381,82 @@ const Dashboard = () => {
           </Box>
         );
       }
+      case "Transactions":
+        return (
+          <Box
+            gridColumn="span 4"
+            gridRow="span 2"
+            backgroundColor={colors.primary[400]}
+            overflow="auto"
+          >
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              borderBottom={`4px solid ${colors.primary[500]}`}
+              colors={colors.grey[100]}
+              p="15px"
+            >
+              <Typography
+                color={colors.grey[100]}
+                variant="h5"
+                fontWeight="600"
+              >
+                {widget.contentProps.title}
+              </Typography>
+            </Box>
+            {mockTransactions.map((transaction, i) => (
+              <Box
+                key={`${transaction.txId}-${i}`}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                borderBottom={`4px solid ${colors.primary[500]}`}
+                p="15px"
+                style={{
+                  textDecoration: checkedRows.includes(transaction.txId)
+                    ? "line-through"
+                    : "none",
+                }}
+              >
+                {/* Checkbox Column */}
+                <Box>
+                  <input
+                    type="checkbox"
+                    checked={checkedRows.includes(transaction.txId)}
+                    onChange={() => handleCheckboxChange(transaction.txId)}
+                    style={{
+                      marginRight: "10px",
+                      transform: "scale(1.2)",
+                      cursor: "pointer",
+                    }}
+                  />
+                </Box>
+                <Box>
+                  <Typography
+                    color={colors.greenAccent[500]}
+                    variant="h5"
+                    fontWeight="600"
+                  >
+                    {transaction.txId}
+                  </Typography>
+                  <Typography color={colors.grey[100]}>
+                    {transaction.user}
+                  </Typography>
+                </Box>
+                <Box color={colors.grey[100]}>{transaction.date}</Box>
+                <Box
+                  backgroundColor={colors.greenAccent[500]}
+                  p="5px 10px"
+                  borderRadius="4px"
+                >
+                  ${transaction.cost}
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        );
+
       default:
         console.error(`Unknown content type: ${widget.contentType}`);
         return null;
@@ -404,7 +506,9 @@ const Dashboard = () => {
         >
           <Box
             p={3}
-            bgcolor={theme.palette.mode === "dark" ? "#333" : "#f5f5f5"}
+            bgcolor={
+              dashboardTheme.palette.mode === "dark" ? "#333" : "#f5f5f5"
+            }
             borderRadius="8px"
             display="flex"
             flexDirection="column"
@@ -421,7 +525,8 @@ const Dashboard = () => {
                 position: "absolute",
                 top: 10,
                 right: 10,
-                color: theme.palette.mode === "dark" ? "white" : "black",
+                color:
+                  dashboardTheme.palette.mode === "dark" ? "white" : "black",
                 paddingBottom: "10px",
               }}
             >
