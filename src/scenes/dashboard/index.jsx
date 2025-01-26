@@ -179,6 +179,16 @@ const Dashboard = () => {
     TrafficIcon: TrafficIcon,
   };
 
+  const addWidget = () => {
+    const newWidget = {
+      id: Date.now(),
+      size: { width: 300, height: 200 },
+      contentType: 'Text',  // Change to 'Text' or another type when adding content
+      contentProps: { title: 'New Widget Content' },  // Set initial content for the widget
+    };
+    setWidgets((prevWidgets) => [...prevWidgets, newWidget]);
+  };
+  
   // Function to move a box/widget within the layout
   const moveBox = (fromIndex, toIndex) => {
     setWidgets((prevWidgets) => {
@@ -222,9 +232,52 @@ const Dashboard = () => {
 
   // Render content dynamically based on contentType
   const renderContent = (widget) => {
+    if (widget.contentType === 'Placeholder') {  
+      return (
+        <Box
+          height="100%"
+          width="100%"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          sx={{
+            backgroundColor: theme.palette.mode === 'dark' ? '#1e293b' : '#ffffff',
+            border: `2px dashed ${theme.palette.mode === 'dark' ? '#ccc' : '#555'}`,
+            borderRadius: '8px',
+          }}
+        >
+          <Typography variant="h5" fontWeight="600" color={theme.palette.mode === 'dark' ? 'white' : 'black'}>
+            {widget.contentProps.title || 'Add content here'}
+
+          </Typography>
+        </Box>
+      );
+    }
+    if (widget.contentType === 'Text') { 
+      return (
+        <Box
+          height="100%"
+          width="100%"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{
+            backgroundColor: theme.palette.mode === 'dark' ? '#1e293b' : '#ffffff',
+            border: `2px dashed ${theme.palette.mode === 'dark' ? '#ccc' : '#555'}`,
+            borderRadius: '8px',
+          }}
+        >
+          <Typography variant="h5" fontWeight="600" color={theme.palette.mode === 'dark' ? 'white' : 'black'}>
+            {widget.contentProps.title || 'No title set'}
+          </Typography>
+        </Box>
+      );
+    }
+    
+
     switch (widget.contentType) {
       case 'StatBox': {
-        const IconComponent = iconMapping[widget.contentProps.icon]; // Get the correct icon
+        const IconComponent = iconMapping[widget.contentProps.icon];
         if (!IconComponent) {
           console.error(`Icon "${widget.contentProps.icon}" not found.`);
           return null;
@@ -271,6 +324,19 @@ const Dashboard = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <Box m="20px" display="flex" flexWrap="wrap">
+
+            {/* Button Container */}
+    <Box display="flex" justifyContent="flex-start" width="100%" mb={2}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={addWidget}
+        sx={{ width: 'auto', minWidth: '150px' }} // Control button width
+      >
+        Add Widget
+      </Button>
+    </Box>
+
         {/* Render draggable boxes/widgets */}
         {widgets.map((widget, index) => (
           <DraggableBox
