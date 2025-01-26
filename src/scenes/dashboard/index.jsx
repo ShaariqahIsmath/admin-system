@@ -1,12 +1,20 @@
-import { Box, Button, IconButton, Typography, useTheme, Modal, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  useTheme,
+  Modal,
+  TextField,
+} from "@mui/material";
 import {
   Email as EmailIcon,
   PointOfSale as PointOfSaleIcon,
-  Traffic as TrafficIcon
-} from '@mui/icons-material';
+  Traffic as TrafficIcon,
+} from "@mui/icons-material";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import  React, {useState, useEffect}  from "react";
+import React, { useState, useEffect } from "react";
 
 import LineChart from "../../components/LineChart";
 import GeographyChart from "../../components/GeographyChart";
@@ -14,7 +22,7 @@ import StatBox from "../../components/StatBox";
 import { ResizableBox } from "react-resizable";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
-import "react-resizable/css/styles.css"
+import "react-resizable/css/styles.css";
 
 // Draggable Box Component
 const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
@@ -23,13 +31,13 @@ const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
 
   // Defining the draggable functionality
   const [, ref] = useDrag({
-    type: 'BOX', // type of the draggable item
+    type: "BOX", // type of the draggable item
     item: { id, index }, // item properties (id and index)
   });
 
   // Defining the drop functionality for when an item is dropped
   const [, drop] = useDrop({
-    accept: 'BOX', // accepts items of type 'BOX'
+    accept: "BOX", // accepts items of type 'BOX'
     hover: (draggedItem) => {
       if (draggedItem.index !== index) {
         moveBox(draggedItem.index, index); // Move box to new index
@@ -40,13 +48,16 @@ const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
 
   // Styles for the widget box
   const widgetStyles = {
-    backgroundColor: theme.palette.mode === 'dark' ? '#1e293b' : '#ffffff',
-    padding: '10px',
-    borderRadius: '8px',
-    position: 'relative',
-    overflow: 'hidden',
-    boxShadow: theme.palette.mode === 'dark' ? '0px 4px 10px rgba(0, 0, 0, 0.6)' : '0px 4px 10px rgba(0, 0, 0, 0.1)',
-    margin: '20px',
+    backgroundColor: theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
+    padding: "10px",
+    borderRadius: "8px",
+    position: "relative",
+    overflow: "hidden",
+    boxShadow:
+      theme.palette.mode === "dark"
+        ? "0px 4px 10px rgba(0, 0, 0, 0.6)"
+        : "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    margin: "20px",
   };
 
   return (
@@ -55,7 +66,7 @@ const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
       height={box.size.height}
       minConstraints={[200, 150]} // Minimum size constraints for resizing
       maxConstraints={[700, 500]} // Maximum size constraints for resizing
-      resizeHandles={['se']} // Resize handle position
+      resizeHandles={["se"]} // Resize handle position
       display="flex"
       flexDirection="column"
       style={widgetStyles}
@@ -69,14 +80,19 @@ const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        sx={{ cursor: 'move' }} // Cursor style when moving
+        sx={{ cursor: "move" }} // Cursor style when moving
       >
         {box.content} {/* Render dynamic content */}
       </Box>
 
       {/* Edit Button */}
       <IconButton
-        sx={{ position: 'absolute', top: 5, right: 40, color: theme.palette.mode === 'dark' ? 'white' : 'black' }}
+        sx={{
+          position: "absolute",
+          top: 5,
+          right: 40,
+          color: theme.palette.mode === "dark" ? "white" : "black",
+        }}
         onClick={() => editBox(id)} // Trigger editBox function on click
       >
         <EditIcon />
@@ -85,10 +101,10 @@ const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
       {/* Remove Button */}
       <IconButton
         sx={{
-          position: 'absolute',
+          position: "absolute",
           top: 5,
           right: 5,
-          color: theme.palette.mode === 'dark' ? 'white' : 'black',
+          color: theme.palette.mode === "dark" ? "white" : "black",
         }}
         onClick={() => removeBox(id)} // Trigger removeBox function on click
       >
@@ -102,71 +118,82 @@ const DraggableBox = ({ id, index, box, moveBox, removeBox, editBox }) => {
 const Dashboard = () => {
   // Loading widgets from localStorage or initializing with default values
   const [widgets, setWidgets] = useState(() => {
-    const savedWidgets = localStorage.getItem('widgets');
-    return savedWidgets ? JSON.parse(savedWidgets) : [
-      // Initial widget data
-      {
-        id: 1,
-        size: { width: 300, height: 200 },
-        contentType: 'StatBox',
-        contentProps: {
-          title: '12,361',
-          subtitle: 'Emails Sent',
-          progress: '0.75',
-          increase: '+14%',
-          icon: 'EmailIcon',
-        },
-      },
-      {
-        id: 2,
-        size: { width: 300, height: 200 },
-        contentType: 'StatBox',
-        contentProps: {
-          title: '431,225',
-          subtitle: 'Sales Obtained',
-          progress: '0.50',
-          increase: '+21%',
-          icon: 'PointOfSaleIcon',
-        },
-      },
-      {
-        id: 3,
-        size: { width: 300, height: 200 },
-        contentType: 'StatBox',
-        contentProps: {
-          title:'1,325,134',
-          subtitle:'Traffic Received',
-          progress:'0.80',
-          increase:'+43%',
-          icon: 'TrafficIcon'
-        }
-          
-      },
-      {
-        id: 4,
-        size: { width: 600, height: 300 },
-        contentType: 'LineChart',
-        contentProps: {
-          title: 'Revenue Generated',
-          isDashboard: true,
-        },
-      },
-      {
-        id: 5,
-        size: { width: 600, height: 300 },
-        contentType: 'GeographyChart',
-        contentProps: {
-          title: 'Geography Based Traffic',
-          isDashboard: true,
-          projectionType: 'mercator',
-        },
-      },
-    ];
+    const savedWidgets = localStorage.getItem("widgets");
+    return savedWidgets
+      ? JSON.parse(savedWidgets)
+      : [
+          // Predefined placeholder widget
+          {
+            id: 0,
+            size: { width: 300, height: 200 },
+            contentType: "Text",
+            contentProps: {
+              title: "Predefined Widget",
+            },
+          },
+
+          // Initial widget data
+          {
+            id: 1,
+            size: { width: 300, height: 200 },
+            contentType: "StatBox",
+            contentProps: {
+              title: "12,361",
+              subtitle: "Emails Sent",
+              progress: "0.75",
+              increase: "+14%",
+              icon: "EmailIcon",
+            },
+          },
+          {
+            id: 2,
+            size: { width: 300, height: 200 },
+            contentType: "StatBox",
+            contentProps: {
+              title: "431,225",
+              subtitle: "Sales Obtained",
+              progress: "0.50",
+              increase: "+21%",
+              icon: "PointOfSaleIcon",
+            },
+          },
+          {
+            id: 3,
+            size: { width: 300, height: 200 },
+            contentType: "StatBox",
+            contentProps: {
+              title: "1,325,134",
+              subtitle: "Traffic Received",
+              progress: "0.80",
+              increase: "+43%",
+              icon: "TrafficIcon",
+            },
+          },
+          {
+            id: 4,
+            size: { width: 600, height: 300 },
+            contentType: "LineChart",
+            contentProps: {
+              title: "Revenue Generated",
+              isDashboard: true,
+            },
+          },
+          {
+            id: 5,
+            size: { width: 600, height: 300 },
+            contentType: "GeographyChart",
+            contentProps: {
+              title: "Geography Based Traffic",
+              isDashboard: true,
+              projectionType: "mercator",
+            },
+          },
+        ];
   });
 
   // Saving widgets state to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('widgets', JSON.stringify(widgets));
+    localStorage.setItem("widgets", JSON.stringify(widgets));
   }, [widgets]);
 
   const theme = useTheme();
@@ -181,14 +208,14 @@ const Dashboard = () => {
 
   const addWidget = () => {
     const newWidget = {
-      id: Date.now(),
+      id: Date.now() + 1,
       size: { width: 300, height: 200 },
-      contentType: 'Text',  // Change to 'Text' or another type when adding content
-      contentProps: { title: 'New Widget Content' },  // Set initial content for the widget
+      contentType: "Text", // Change to 'Text' or another type when adding content
+      contentProps: { title: "New Widget Content" }, // Set initial content for the widget
     };
     setWidgets((prevWidgets) => [...prevWidgets, newWidget]);
   };
-  
+
   // Function to move a box/widget within the layout
   const moveBox = (fromIndex, toIndex) => {
     setWidgets((prevWidgets) => {
@@ -212,8 +239,9 @@ const Dashboard = () => {
     if (!editingWidget) return;
 
     setWidgets((prevWidgets) =>
-      prevWidgets.map((widget) =>
-        widget.id === editingWidget.id ? { ...editingWidget } : widget // Update the widget with edited data
+      prevWidgets.map(
+        (widget) =>
+          widget.id === editingWidget.id ? { ...editingWidget } : widget // Update the widget with edited data
       )
     );
     setEditingWidget(null); // Reset editing state
@@ -232,7 +260,7 @@ const Dashboard = () => {
 
   // Render content dynamically based on contentType
   const renderContent = (widget) => {
-    if (widget.contentType === 'Placeholder') {  
+    if (widget.contentType === "Placeholder") {
       return (
         <Box
           height="100%"
@@ -241,42 +269,54 @@ const Dashboard = () => {
           alignItems="center"
           justifyContent="center"
           sx={{
-            backgroundColor: theme.palette.mode === 'dark' ? '#1e293b' : '#ffffff',
-            border: `2px dashed ${theme.palette.mode === 'dark' ? '#ccc' : '#555'}`,
-            borderRadius: '8px',
+            backgroundColor:
+              theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
+            border: `2px dashed ${
+              theme.palette.mode === "dark" ? "#ccc" : "#555"
+            }`,
+            borderRadius: "8px",
           }}
         >
-          <Typography variant="h5" fontWeight="600" color={theme.palette.mode === 'dark' ? 'white' : 'black'}>
-            {widget.contentProps.title || 'Add content here'}
-
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            color={theme.palette.mode === "dark" ? "white" : "black"}
+          >
+            {widget.contentProps.title || "Add content here"}
           </Typography>
         </Box>
       );
     }
-    if (widget.contentType === 'Text') { 
+    if (widget.contentType === "Text") {
       return (
         <Box
           height="100%"
           width="100%"
           display="flex"
-          justifyContent="center"
           alignItems="center"
+          justifyContent="center"
           sx={{
-            backgroundColor: theme.palette.mode === 'dark' ? '#1e293b' : '#ffffff',
-            border: `2px dashed ${theme.palette.mode === 'dark' ? '#ccc' : '#555'}`,
-            borderRadius: '8px',
+            backgroundColor:
+              theme.palette.mode === "dark" ? "#1e293b" : "#ffffff",
+            border: `2px dashed ${
+              theme.palette.mode === "dark" ? "#ccc" : "#555"
+            }`,
+            borderRadius: "8px",
           }}
         >
-          <Typography variant="h5" fontWeight="600" color={theme.palette.mode === 'dark' ? 'white' : 'black'}>
-            {widget.contentProps.title || 'No title set'}
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            color={theme.palette.mode === "dark" ? "white" : "black"}
+          >
+            {widget.contentProps.title || "Add content here"}
           </Typography>
         </Box>
       );
     }
-    
 
     switch (widget.contentType) {
-      case 'StatBox': {
+      case "StatBox": {
         const IconComponent = iconMapping[widget.contentProps.icon];
         if (!IconComponent) {
           console.error(`Icon "${widget.contentProps.icon}" not found.`);
@@ -292,7 +332,7 @@ const Dashboard = () => {
           />
         );
       }
-      case 'LineChart': {
+      case "LineChart": {
         return (
           <Box height="100%" width="100%">
             <Typography variant="h5" fontWeight="600" color="#FFFFFF" mb={2}>
@@ -302,7 +342,7 @@ const Dashboard = () => {
           </Box>
         );
       }
-      case 'GeographyChart': {
+      case "GeographyChart": {
         return (
           <Box height="100%" width="100%">
             <Typography variant="h5" fontWeight="600" color="#FFFFFF" mb={2}>
@@ -324,18 +364,17 @@ const Dashboard = () => {
   return (
     <DndProvider backend={HTML5Backend}>
       <Box m="20px" display="flex" flexWrap="wrap">
-
-            {/* Button Container */}
-    <Box display="flex" justifyContent="flex-start" width="100%" mb={2}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={addWidget}
-        sx={{ width: 'auto', minWidth: '150px' }} // Control button width
-      >
-        Add Widget
-      </Button>
-    </Box>
+        {/* Button Container */}
+        <Box display="flex" justifyContent="flex-start" width="100%" mb={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={addWidget}
+            sx={{ width: "auto", minWidth: "150px" }} // Control button width
+          >
+            Add Widget
+          </Button>
+        </Box>
 
         {/* Render draggable boxes/widgets */}
         {widgets.map((widget, index) => (
@@ -365,7 +404,7 @@ const Dashboard = () => {
         >
           <Box
             p={3}
-            bgcolor={theme.palette.mode === 'dark' ? '#333' : '#f5f5f5'}
+            bgcolor={theme.palette.mode === "dark" ? "#333" : "#f5f5f5"}
             borderRadius="8px"
             display="flex"
             flexDirection="column"
@@ -379,11 +418,11 @@ const Dashboard = () => {
             <IconButton
               onClick={cancelEdit}
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 10,
                 right: 10,
-                color: theme.palette.mode === 'dark' ? 'white' : 'black',
-                paddingBottom: '10px',
+                color: theme.palette.mode === "dark" ? "white" : "black",
+                paddingBottom: "10px",
               }}
             >
               <CloseIcon />
@@ -391,13 +430,18 @@ const Dashboard = () => {
 
             {/* TextField for editing widget content */}
             <TextField
-               style={{ marginTop: '20px', marginBottom: '70px'}}
+              style={{ marginTop: "20px", marginBottom: "70px" }}
               variant="outlined"
-              value={editingWidget?.contentProps?.title || ''}
-              onChange={(e) => setEditingWidget({
-                ...editingWidget,
-                contentProps: { ...editingWidget.contentProps, title: e.target.value },
-              })}
+              value={editingWidget?.contentProps?.title || ""}
+              onChange={(e) =>
+                setEditingWidget({
+                  ...editingWidget,
+                  contentProps: {
+                    ...editingWidget.contentProps,
+                    title: e.target.value,
+                  },
+                })
+              }
             />
 
             {/* Button to save the changes */}
